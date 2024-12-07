@@ -1,0 +1,96 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom green scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light background */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #10b981; /* Green */
+    border-radius: 6px;
+    border: 3px solid #ffffff; /* Optional: Adds a border for thumb */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #059669; /* Darker green on hover */
+  }
+  
+
+  .fadeInScaleUp {
+    animation: fadeInScaleUp 0.5s ease-out forwards;
+  }
+  
+  @keyframes fadeInScaleUp {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  
+
+  .tilt {
+    perspective: 1000px;
+  }
+  
+  .tilt:hover {
+    transform: rotateY(10deg) rotateX(10deg);
+    transition: transform 0.4s ease;
+  }
+
+  
+
+  .parallax {
+    background-image: url('your-image.jpg');
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+  }
+
+  
+
+/* Ensure navbar stays fixed above everything */
+.header {
+  position: fixed; /* Keeps navbar at the top even on scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Ensures navbar is above all other content */
+  background-color: white; /* Background color to prevent transparency issues */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
+}
+
+/* Ensure content doesn’t overlap navbar */
+body {
+  margin-top: 64px; /* Adjust this value according to your navbar height */
+}
+
+/* For the main content background to have a clean appearance */
+/* .bg-[#f8f9ff] {
+  position: relative;
+  z-index: 1;
+} */
+
+  
+
+
+
+
+
+ 
+ 
+
+
+
+
