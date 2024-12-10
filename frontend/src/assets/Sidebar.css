@@ -1,0 +1,22 @@
+.sidebar-container {
+    position: relative;
+    width: 16rem; /* equal to tailwind's w-64 */
+    padding: 1rem;
+    background: #e2e8f0; /* fall-back grey background */
+    overflow: hidden;
+  }
+  
+  .sidebar-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../images/117.svg'); /* assuming the SVG is within src folder */
+    background-size: cover;
+    background-position: center;
+    filter: blur(px); /* Adjust blur intensity as desired */
+    z-index: -1; /* Ensures that this stays in the background */
+    opacity: 0.5; /* Control the visibility of the background image */
+  }

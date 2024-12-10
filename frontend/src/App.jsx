@@ -10,6 +10,10 @@ import './index.css'
 import NavigationBar from "./components/NavigationBar";
 import PreferedTopic from "./pages/PreferedTopic";
 import Home from "./pages/Home";
+import ProfilePicturePage from "./pages/ProfilePicturePage";
+
+import Dashboard from "./pages/Dashboard";
+import DiscussionBoard from "./pages/DiscussionBoard";
 
 
 import './App.css'
@@ -27,6 +31,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/preferedTopic" element={<PreferedTopic />} />
           <Route path="/" element={<Home />} />
+          <Route path="/addprofile" element={<ProfilePicturePage />} />
+          
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/discussion" element={<DiscussionBoard />} />
           
           
         </Routes>

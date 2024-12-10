@@ -26,24 +26,26 @@ const NavigationBar = () => {
     <>
       <header className="header top-0 sticky bg-white shadow-md flex items-center justify-between  mx-auto px-16 left-0 w-full b z-10">
         <div className="w-3/12">
-          <h1 className="text-3xl font-bold text-green-500">
-            <a href="/">Logo</a>
-          </h1>
+        <h1 className="text-3xl font-bold">
+  <span className="text-green-600">theHub</span>
+  <span className="text-black">!</span>
+</h1>
+
         </div>
 
         <nav className="nav font-semibold text-lg">
-          <ul className="flex items-center">
-            <li className="p-4 border-b-2 border-green-500 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">
+          <ul className="ml-20 flex items-center">
+            <li className="p-4 border-b-2 border-green-600 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">
               <a href="/">Home</a>
             </li>
-            <li className="p-4 border-b-2 border-green-500 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">
-              <a href="/">Topic</a>
+            <li className="p-4 border-b-2 border-green-600 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">
+              <a href="/dashboard">Topic</a>
             </li>
-            <li className="p-4 border-b-2 border-green-500 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">
-              <a href="/">Collections</a>
+            <li className="p-4 border-b-2 border-green-600 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">
+              <a href="">Collections</a>
             </li>
-            <li className="p-4 border-b-2 border-green-500 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">
-              <a href="/">Contact</a>
+            <li className="p-4 border-b-2 border-green-600 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">
+              <a href="/discussion">Discussions</a>
             </li>
           </ul>
         </nav>
@@ -74,7 +76,7 @@ const NavigationBar = () => {
             }}
           >
             <svg
-              className="h-8 p-1 hover:text-green-500 duration-200"
+              className="h-8 p-1 hover:text-green-600 duration-200"
               aria-hidden="true"
               focusable="false"
               data-prefix="far"
@@ -100,7 +102,7 @@ const NavigationBar = () => {
 
   {/* Notification Icon */}
   <svg 
-    className="h-6 w-6 text-gray-700 hover:text-green-500" 
+    className="h-6 w-6 text-gray-700 hover:text-green-600" 
     xmlns="http://www.w3.org/2000/svg" 
     fill="none" 
     viewBox="0 0 24 24" 

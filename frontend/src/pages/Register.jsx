@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../../src/index.css";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import BackgroundSvg from "../images/114.svg"; // Import the background SVG
+
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -47,13 +49,32 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   };
 
   return (
-    <div className="w-full m-auto mt-9 overflow-auto scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-gray-200">
-
-      <h1 className="text-3xl font-bold mb-6 justify-center text-green-500 flex">Register</h1>
-      <form
-        className="ml-auto mr-auto rounded-3xl px-10 pt-8 pb-10 mb-6 mt-2 bg-slate-20 shadow-xl w-1/2"
-        onSubmit={handleSubmit}
-      >
+    <div className="relative w-full min-h-screen">
+      {/* Blurred Background */}
+      <div
+        style={{
+          backgroundImage: `url(${BackgroundSvg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          filter: "blur(5px)",
+        }}
+        className="absolute top-0 left-0 w-full h-full -z-10"
+      ></div>
+      <div
+        className="absolute top-0 left-0 w-full h-full bg-opacity-50"
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.6)", // Add slight overlay for visibility
+        }}
+      />
+      <div className="relative w-full min-h-screen m-auto overflow-hidden scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-gray-200">
+        <h1 className="text-3xl mt-12 font-bold mb-6 justify-center text-green-600 flex">
+          Register
+        </h1>
+        <form
+          className="ml-auto mr-auto rounded-3xl px-10 pt-8 pb-10 mb-6 -mt-2 bg-white shadow-xl w-1/2"
+          onSubmit={handleSubmit}
+        >
         {/* First and Last Name */}
         <div className="flex justify-between gap-4">
           <div className="w-full">
@@ -61,7 +82,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               First Name
             </label>
             <input
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
   id="firstName"
               type="text"
               placeholder="First Name"
@@ -75,7 +96,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               Last Name
             </label>
             <input
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
   id="lastName"
               type="text"
               placeholder="Last Name"
@@ -93,7 +114,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               Username
             </label>
             <input
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
   id="username"
               type="text"
               placeholder="Username"
@@ -107,7 +128,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               Email
             </label>
             <input
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
   id="email"
               type="email"
               placeholder="Email Address"
@@ -125,7 +146,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               Date of Birth
             </label>
             <input
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
   id="dateOfBirth"
               type="date"
               value={formData.dateOfBirth}
@@ -138,7 +159,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               Gender
             </label>
             <select
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
   id="gender"
               value={formData.gender}
               onChange={handleChange}
@@ -155,7 +176,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               Country
             </label>
             <select
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
   id="country"
               value={formData.country}
               onChange={handleChange}
@@ -189,35 +210,35 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   "Brazil",
   "Brunei",
   "Bulgaria",
-  "Burkina Faso",
+  "Burkina Faso", 
   "Burundi",
-  "Cabo Verde",
   "Cambodia",
   "Cameroon",
-  "Canada",
-  "Central African Republic",
+  "Canada", 
+  "Cape Verde",
+  "Central African Republic", 
   "Chad",
   "Chile",
   "China",
-  "Colombia",
-  "Comoros",
-  "Congo (Congo-Brazzaville)",
+  "Colombia", 
+  "Comoros",                                                                                                                                                                                                    
+  "Congo (Congo-Brazzaville)", 
   "Costa Rica",
   "Croatia",
   "Cuba",
   "Cyprus",
-  "Czechia (Czech Republic)",
+  "Czech Republic",
   "Denmark",
   "Djibouti",
   "Dominica",
   "Dominican Republic",
+  "East Timor (Timor-Leste)",
   "Ecuador",
   "Egypt",
   "El Salvador",
   "Equatorial Guinea",
   "Eritrea",
   "Estonia",
-  "Eswatini",
   "Ethiopia",
   "Fiji",
   "Finland",
@@ -226,7 +247,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   "Gambia",
   "Georgia",
   "Germany",
-  "Ghana",
+  "Ghana",  
   "Greece",
   "Grenada",
   "Guatemala",
@@ -234,39 +255,37 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   "Guinea-Bissau",
   "Guyana",
   "Haiti",
-  "Holy See",
   "Honduras",
   "Hungary",
   "Iceland",
   "India",
-  "Indonesia",
+  "Indonesia",  
   "Iran",
   "Iraq",
   "Ireland",
   "Israel",
   "Italy",
-  "Jamaica",
+  "Jamaica",  
   "Japan",
-  "Jordan",
+  "Jordan", 
   "Kazakhstan",
-  "Kenya",
+  "Kenya",  
   "Kiribati",
-  "Korea (North)",
-  "Korea (South)",
   "Kuwait",
   "Kyrgyzstan",
   "Laos",
   "Latvia",
   "Lebanon",
   "Lesotho",
-  "Liberia",
+  "Liberia",  
   "Libya",
   "Liechtenstein",
   "Lithuania",
   "Luxembourg",
+  "Macedonia",  
   "Madagascar",
   "Malawi",
-  "Malaysia",
+  "Malaysia",  
   "Maldives",
   "Mali",
   "Malta",
@@ -274,88 +293,89 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   "Mauritania",
   "Mauritius",
   "Mexico",
-  "Micronesia",
+  "Micronesia",  
   "Moldova",
-  "Monaco",
+  "Monaco",  
   "Mongolia",
-  "Montenegro",
-  "Morocco",
+  "Morocco",  
   "Mozambique",
-  "Myanmar (Burma)",
+  "Myanmar",
   "Namibia",
-  "Nauru",
+  "Nauru",  
   "Nepal",
-  "Netherlands",
+  "Netherlands",  
   "New Zealand",
   "Nicaragua",
-  "Niger",
-  "Nigeria",
-  "North Macedonia",
-  "Norway",
+  "Niger",  
+  "Nigeria",  
+  "North Korea",
+  "Norway",  
   "Oman",
-  "Pakistan",
-  "Palau",
-  "Palestine State",
+  "Pakistan",  
+  "Palau",  
+  "Palestine",  
   "Panama",
-  "Papua New Guinea",
+  "Papua New Guinea",  
   "Paraguay",
-  "Peru",
+  "Peru",  
   "Philippines",
   "Poland",
-  "Portugal",
-  "Qatar",
-  "Romania",
-  "Russia",
-  "Rwanda",
-  "Saint Kitts and Nevis",
-  "Saint Lucia",
-  "Saint Vincent and the Grenadines",
-  "Samoa",
-  "San Marino",
-  "Sao Tome and Principe",
-  "Saudi Arabia",
-  "Senegal",
-  "Serbia",
-  "Seychelles",
-  "Sierra Leone",
-  "Singapore",
-  "Slovakia",
-  "Slovenia",
-  "Solomon Islands",
-  "Somalia",
-  "South Africa",
-  "South Sudan",
-  "Spain",
-  "Sri Lanka",
-  "Sudan",
-  "Suriname",
-  "Sweden",
-  "Switzerland",
-  "Syria",
-  "Tajikistan",
-  "Tanzania",
-  "Thailand",
-  "Timor-Leste",
-  "Togo",
-  "Tonga",
-  "Trinidad and Tobago",
-  "Tunisia",
-  "Turkey",
-  "Turkmenistan",
-  "Tuvalu",
-  "Uganda",
-  "Ukraine",
-  "United Arab Emirates",
-  "United Kingdom",
-  "United States of America",
-  "Uruguay",
-  "Uzbekistan",
-  "Vanuatu",
-  "Venezuela",
-  "Vietnam",
-  "Yemen",
-  "Zambia",
-  "Zimbabwe"
+  "Portugal",  
+  "Qatar",  
+  "Romania",  
+  "Russia",  
+  "Rwanda",  
+  "Saint Kitts and Nevis",  
+  "Saint Lucia",  
+  "Saint Vincent and the Grenadines",  
+  "Samoa",  
+  "San Marino",  
+  "Sao Tome and Principe",  
+  "Saudi Arabia",  
+  "Senegal",  
+  "Serbia",  
+  "Seychelles",  
+  "Sierra Leone",  
+  "Singapore",  
+  "Slovakia",  
+  "Slovenia",  
+  "Solomon Islands",  
+  "Somalia",  
+  "South Africa",  
+  "South Korea",  
+  "Spain",  
+  "Sri Lanka",  
+  "Sudan",  
+  "Suriname",  
+  "Swaziland",  
+  "Sweden",  
+  "Switzerland",  
+  "Syria",  
+  "Tajikistan",  
+  "Tanzania",  
+  "Thailand",  
+  "Timor-Leste",  
+  "Togo",  
+  "Tonga",  
+  "Trinidad and Tobago",  
+  "Tunisia",  
+  "Turkey",  
+  "Turkmenistan",  
+  "Tuvalu",  
+  "Uganda",  
+  "Ukraine",  
+  "United Arab Emirates",  
+  "United Kingdom",  
+  "United States",  
+  "Uruguay",  
+  "Uzbekistan",  
+  "Vanuatu",  
+  "Venezuela",  
+  "Vietnam",  
+  "Yemen",  
+  "Zambia",  
+  "Zimbabwe"  
+
 ]
 .map((country) => (
                 <option key={country} value={country}>
@@ -373,7 +393,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               Password
             </label>
             <input
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
   id="password"
               type="password"
               placeholder="*********"
@@ -387,7 +407,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
               Confirm Password
             </label>
             <input
-  className="shadow-lg my-1 focus:outline-none focus:border-green-500 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+  className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
              id="confirmPassword"
               
               type={showPassword ? "text" : "password"}
@@ -408,7 +428,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
         {/* Submit Button */}
         <div className="   items-center justify-between">
           <button
-            className="ml-auto mr-auto mt-7 flex items-center justify-center bg-green-500 hover:bg-green-800 text-white font-bold py-2 rounded-xl mx-3 px-36"
+            className="ml-auto mr-auto mt-7 flex items-center  justify-center bg-green-600 hover:bg-green-800 text-white font-bold py-2.5 rounded-xl mx-3 px-36"
             type="submit"
           >
             Register
@@ -416,11 +436,12 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
         </div>
         <div className="text-center text-xs mt-2">
         Already have an account? 
-          <a className="ml-2  text-green-500 text-xs" href="/login">
+          <a className="ml-2  text-green-600 text-xs" href="/login">
                  Sign in
           </a>
         </div>
       </form>
+    </div>
     </div>
   );
 }

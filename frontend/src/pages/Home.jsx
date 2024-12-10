@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { motion } from 'framer-motion';
 function Home() {
   const containerRef = useRef(null);
   const navigate = useNavigate();
@@ -30,6 +30,8 @@ function Home() {
       behavior: 'smooth',
     });
   };
+
+  
   return (
     <div className="bg-[#f8f9ff] py-24 text-black text-[15px] -mt-8">
       
