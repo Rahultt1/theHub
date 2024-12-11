@@ -14,6 +14,7 @@ import ProfilePicturePage from "./pages/ProfilePicturePage";
 
 import Dashboard from "./pages/Dashboard";
 import DiscussionBoard from "./pages/DiscussionBoard";
+import DiscussionDetails from "./components/DiscussionDetails";
 
 
 import './App.css'
@@ -35,6 +36,7 @@ function App() {
           
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/discussion" element={<DiscussionBoard />} />
+          <Route path="/discussion/:id" element={<DiscussionDetails />} />
           
           
         </Routes>
