@@ -16,9 +16,7 @@ const discussions = [
     comments: [
       { id: 1, user: "Alice", text: "AI is rapidly advancing in areas like generative AI and edge computing." },
     ],
-    uploads: [
-      { name: "AI_Trends.jpg", type: "image", preview: "https://via.placeholder.com/150" },
-    ],
+    uploads: [{ name: "AI_Trends.jpg", type: "image", preview: "https://via.placeholder.com/150" }],
   },
   {
     id: 2,
@@ -39,6 +37,7 @@ const discussions = [
 const Content = () => {
   const mainTopic = "Technology";
   const [filteredDiscussions, setFilteredDiscussions] = useState(discussions);
+  const [searchTerm, setSearchTerm] = useState(""); // Real-time search term state
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -61,6 +60,19 @@ const Content = () => {
     setFilteredDiscussions([newDiscussion, ...filteredDiscussions]);
   };
 
+  /**
+   * Filters discussions in real-time as the user types in the search bar.
+   */
+  const handleSearchInput = (searchValue) => {
+    setSearchTerm(searchValue); // Update search term
+    const filtered = discussions.filter(
+      (discussion) =>
+        discussion.question.toLowerCase().includes(searchValue.toLowerCase()) ||
+        discussion.subtopic.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredDiscussions(filtered);
+  };
+
   return (
     <div className="flex">
       <MySidebar />
@@ -68,6 +80,17 @@ const Content = () => {
         {/* Main Topic Header */}
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold text-green-600">{mainTopic}</h2>
+
+          {/* Search Bar */}
+          <div className="flex items-center mt-3 justify-center mb-0">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => handleSearchInput(e.target.value)} // Filter while typing
+              placeholder="   Search discussions..."
+              className="bg-gray-100 p-2 rounded-full mt-8 w-2/6 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 transform focus:scale-110"
+            />
+          </div>
         </div>
 
         {/* Discussions List */}

@@ -13,6 +13,7 @@ const Login = () => {
 
   const [showPassword, setShowPassword] = useState(false); // Password visibility toggle
   const [error, setError] = useState(""); // State to handle errors
+  const [successMessage, setSuccessMessage] = useState(""); // State to display success message (optional)
 
   // Handle input changes
   const handleChange = (e) => {
@@ -23,14 +24,28 @@ const Login = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError(""); // Clear any previous error state
+    setSuccessMessage("");
 
     try {
+      // Send login data to the backend
       const response = await axios.post("http://localhost:5000/api/login", formData);
-      console.log("Login successful", response.data);
+
+      // Handle successful login
+      console.log("Login successful", response.data); // Log the response (e.g., JWT token or user data)
+      setSuccessMessage("Login successful! Redirecting...");
+
+      // Optional: Save token if you're handling authentication
+      localStorage.setItem("authToken", response.data.token);
+
+      // Redirect user or handle post-login UI changes
+      setTimeout(() => {
+        window.location.href = "/dashboard"; // Redirect to dashboard or home page
+      }, 2000);
     } catch (err) {
-      console.error(err.response.data);
-      setError("Invalid username or password");
+      // Handle error response
+      console.error(err.response?.data || "An error occurred during login");
+      setError(err.response?.data?.message || "Invalid username or password");
     }
   };
 
@@ -42,7 +57,6 @@ const Login = () => {
         style={{
           backgroundImage: `url(${BackgroundSvg})`, // Use the imported SVG
           backgroundSize: "cover",
-          
           filter: "blur(5px)", // Apply blur only to the background
           zIndex: -1, // Ensure it stays behind all content
         }}
@@ -97,7 +111,10 @@ const Login = () => {
             >
               {showPassword ? <MdVisibilityOff size={24} /> : <MdVisibility size={24} />}
             </span>
-            {error && <p className="text-red-500 text-xs italic">{error}</p>}
+            {error && <p className="text-red-500 text-xs italic mt-2">{error}</p>}
+            {successMessage && (
+              <p className="text-green-500 text-xs italic mt-2">{successMessage}</p>
+            )}
           </div>
           <div className="items-center justify-between">
             <button
