@@ -44,11 +44,18 @@ const NavigationBar = () => {
 
   // Handle signing out
   const handleSignOut = () => {
+    // Clear user information and token from localStorage
     localStorage.removeItem("user");
     localStorage.removeItem("authToken");
+
+    // Reset user states
     setUser(null);
     setIsLoggedIn(false);
+
     console.log("User successfully signed out"); // Debug logout
+
+    // Redirect to the home page
+    window.location.href = "/";
   };
 
   return (

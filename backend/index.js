@@ -1,26 +1,31 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const connectDB = require('./config/db');
-const authRoutes = require('./routes/auth');
-const discussionRoutes = require('./routes/discussion');
-const topicRoutes = require('./routes/topic'); // Add topic routes
-
-const app = express();
+const mongoose = require('mongoose');
+const topicRoutes = require('./routes/topicRoutes');
+const authRoutes = require('./routes/authRoutes');
 require('dotenv').config();
 
-// Connect to MongoDB
-connectDB();
+const app = express();
 
 // Middleware
-app.use(cors());
 app.use(bodyParser.json());
+app.use(cors());
 
-// Routes
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => console.log('MongoDB connected successfully'))
+    .catch((err) => console.error('MongoDB connection error:', err));
+
+// Topic Routes Middleware
+app.use('/api', topicRoutes);
 app.use('/api', authRoutes);
-app.use('/api', discussionRoutes);
-app.use('/api', topicRoutes); // Register the topic routes
 
-// Start Server
+
+// Start the server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});

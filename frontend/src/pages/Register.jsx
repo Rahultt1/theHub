@@ -37,16 +37,20 @@ function Register() {
     }
 
     try {
-      // Send form data to the backend API
+      // Send registration request
       const response = await axios.post(
-        "http://localhost:5000/api/register",
-        formData
+          "http://localhost:5000/api/register",
+          formData
       );
 
+      // Retrieve and store JWT token
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+
       // Show success notification using toast
-      toast.success("Registration successful! You can now log in.", {
+      toast.success("Registration successful! You are now logged in.", {
         position: "top-center",
-        autoClose: 3000, // Close after 3 seconds
+        autoClose: 3000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
@@ -55,7 +59,7 @@ function Register() {
         theme: "colored",
       });
 
-      // Clear the form after a successful submission
+      // Clear the form
       setFormData({
         firstName: "",
         lastName: "",
