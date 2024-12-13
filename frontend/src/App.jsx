@@ -1,48 +1,51 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Login from "./pages/Login"; // Ensure Login component is correctly imported
+import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Footer from "./components/Footer";
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
 import NavigationBar from "./components/NavigationBar";
 import PreferedTopic from "./pages/PreferedTopic";
 import Home from "./pages/Home";
 import ProfilePicturePage from "./pages/ProfilePicturePage";
-
 import Dashboard from "./pages/Dashboard";
 import DiscussionBoard from "./pages/DiscussionBoard";
 import DiscussionDetails from "./components/DiscussionDetails";
 
-
-import './App.css'
+import "./App.css";
+import "./index.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0); // Currently unused
 
   return (
-    <>
-    <NavigationBar />
+    <div className="app-container">
+      {/* Navigation Bar */}
+      <NavigationBar />
+      
+      {/* Router Setup */}
       <Router>
         <Routes>
-          
+          {/* Auth Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          {/* Onboarding and Profile */}
           <Route path="/preferedTopic" element={<PreferedTopic />} />
-          <Route path="/" element={<Home />} />
           <Route path="/addprofile" element={<ProfilePicturePage />} />
+
+          {/* Core App */}
+          <Route path="/" element={<Home />} />
           
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/discussion" element={<DiscussionBoard />} />
           <Route path="/discussion/:id" element={<DiscussionDetails />} />
-          
-          
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
+
+      {/* Footer */}
       <Footer />
-    </>
+    </div>
   );
 }
 

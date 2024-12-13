@@ -3,6 +3,8 @@ import "../../src/index.css";
 
 const NavigationBar = () => {
   const [isSearchBoxOpen, setSearchBoxOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if user is logged in
+  const [user, setUser] = useState(null); // State to store user details
   const searchBoxRef = useRef(null);
 
   const toggleSearchBox = () => {
@@ -22,15 +24,41 @@ const NavigationBar = () => {
     };
   }, []);
 
+  // Check login status and fetch user details from localStorage (or token)
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("authToken"); // Correct key used for 'authToken'
+    
+    console.log("Stored user:", storedUser); // Debug stored user
+    console.log("Stored token:", storedToken); // Debug stored token
+
+    if (storedUser && storedToken) {
+      const parsedUser = JSON.parse(storedUser); // Parse user and set in state
+      setUser(parsedUser);
+      setIsLoggedIn(true);
+      console.log("User successfully logged in:", parsedUser.username); // Debug username
+    } else {
+      console.log("User is not logged in");
+    }
+  }, []);
+
+  // Handle signing out
+  const handleSignOut = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("authToken");
+    setUser(null);
+    setIsLoggedIn(false);
+    console.log("User successfully signed out"); // Debug logout
+  };
+
   return (
     <>
-      <header className="header top-0 sticky bg-white shadow-md flex items-center justify-between  mx-auto px-16 left-0 w-full b z-10">
+      <header className="header top-0 sticky bg-white shadow-md flex items-center justify-between mx-auto px-16 left-0 w-full z-10">
         <div className="w-3/12">
-        <h1 className="text-3xl font-bold">
-  <span className="text-green-600">theHub</span>
-  <span className="text-black">!</span>
-</h1>
-
+          <h1 className="text-3xl font-bold">
+            <span className="text-green-600">theHub</span>
+            <span className="text-black">!</span>
+          </h1>
         </div>
 
         <nav className="nav font-semibold text-lg">
@@ -54,7 +82,7 @@ const NavigationBar = () => {
           className="w-3/12 flex justify-end items-center relative"
           ref={searchBoxRef}
         >
-          {/* Search input */}
+          {/* Search Input */}
           {isSearchBoxOpen && (
             <input
               type="text"
@@ -67,7 +95,7 @@ const NavigationBar = () => {
             />
           )}
 
-          {/* Search button */}
+          {/* Search Button */}
           <button
             onClick={toggleSearchBox}
             className="mr-36 focus:outline-none transition-transform duration-500 transform"
@@ -92,36 +120,53 @@ const NavigationBar = () => {
             </svg>
           </button>
         </div>
+
+        {/* Profile Section */}
         <div className="flex items-center space-x-4">
-  {/* Profile Picture */}
-  <img 
-    src="https://randomuser.me/api/portraits/men/1.jpg" 
-    alt="Profile" 
-    className="w-10 h-10 rounded-full object-cover"
-  />
-
-  {/* Notification Icon */}
-  <svg 
-    className="h-6 w-6 text-gray-700 hover:text-green-600" 
-    xmlns="http://www.w3.org/2000/svg" 
-    fill="none" 
-    viewBox="0 0 24 24" 
-    stroke="currentColor"
-  >
-    <path 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      strokeWidth="2" 
-      d="M15 17h5l-1.405-1.405A2.981 2.981 0 0019 13V8a7 7 0 10-14 0v5a2.981 2.981 0 00-.595 2.595L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-    />
-  </svg>
-</div>
-
-        <div>
-        
-            <a className="text-sm font-semibold text-black" href="/">Sign Out</a>
+          {isLoggedIn && user ? (
+            // Show after Login
+            <>
+              <img
+                src="https://randomuser.me/api/portraits/men/1.jpg" // Temporary profile pic
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <p className="text-sm font-semibold text-black">
+                {user.username || "Unknown User"}
+              </p>
+              <svg
+                className="h-6 w-6 text-gray-700 hover:text-green-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 17h5l-1.405-1.405A2.981 2.981 0 0019 13V8a7 7 0 10-14 0v5a2.981 2.981 0 00-.595 2.595L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+              <button
+                className="text-sm font-semibold text-black cursor-pointer"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            // Show Before Login
+            <>
+              <a className="text-sm font-semibold text-black" href="/login">
+                Sign In
+              </a>
+              <a className="text-sm font-semibold text-black" href="/register">
+                Register
+              </a>
+            </>
+          )}
         </div>
-       
       </header>
     </>
   );

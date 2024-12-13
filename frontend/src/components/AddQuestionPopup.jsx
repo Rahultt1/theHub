@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 
 const AddQuestionPopup = ({ onClose, onSubmit }) => {
-  const topics = [
+  const topics = [  
+     
     "Technology", "AI", "Healthcare", "Education", "Environment",
     "Sports", "Finance", "Automotive", "Gaming", "Lifestyle",
     "Travel", "Science", "Food", "History", "Art",
   ]; // 15 predefined topics
 
-  const [topic, setTopic] = useState("");         // State for selected topic (Dropdown)
+  const [topic, setTopic] = useState("");         // State for topic
   const [subtopic, setSubtopic] = useState("");   // State for subtopic
   const [question, setQuestion] = useState("");   // State for question
   const [link, setLink] = useState("");           // State for added link

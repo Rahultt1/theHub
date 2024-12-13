@@ -28,23 +28,31 @@ const Login = () => {
     setSuccessMessage("");
 
     try {
-      // Send login data to the backend
       const response = await axios.post("http://localhost:5000/api/login", formData);
-
-      // Handle successful login
-      console.log("Login successful", response.data); // Log the response (e.g., JWT token or user data)
+    
+      // Extract token and user from the response
+      const { token, user } = response.data;
+    
+      // Save them into localStorage
+      if (token) {
+        localStorage.setItem("authToken", token);
+    
+        if (user) {
+          console.log("User Details:", user); // Log the user details to debug
+          localStorage.setItem("user", JSON.stringify(user));
+        } else {
+          console.error("User object is missing in the response.");
+        }
+      } else {
+        console.error("Token is missing.");
+      }
+    
       setSuccessMessage("Login successful! Redirecting...");
-
-      // Optional: Save token if you're handling authentication
-      localStorage.setItem("authToken", response.data.token);
-
-      // Redirect user or handle post-login UI changes
       setTimeout(() => {
-        window.location.href = "/dashboard"; // Redirect to dashboard or home page
+        window.location.href = "/dashboard";
       }, 2000);
     } catch (err) {
-      // Handle error response
-      console.error(err.response?.data || "An error occurred during login");
+      console.error("Login failed:", err.response?.data?.message || err.message);
       setError(err.response?.data?.message || "Invalid username or password");
     }
   };
