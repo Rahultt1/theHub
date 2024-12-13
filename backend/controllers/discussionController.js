@@ -1,3 +1,4 @@
+const axios = require("axios");
 const Discussion = require("../models/Discussion");
 
 const addDiscussion = async (req, res) => {
@@ -16,7 +17,11 @@ const addDiscussion = async (req, res) => {
     console.log("Response from backend:", response.data);
   } catch (error) {
     console.log("Error Response Details:", error.response?.data || error.message);
-    alert("Failed to add discussion: " + (error.response?.data?.message || "Unknown error."));
+    console.error("Failed to add discussion: ", error.response?.data?.message || "Unknown error.");
+    res.status(500).json({
+      message: error.response?.data?.message || "Unknown error",
+      error: true,
+    });
   }
 };
 
