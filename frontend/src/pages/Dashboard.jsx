@@ -1,229 +1,181 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import MySidebar from "../components/MySidebar";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Card, CardContent, Typography } from '@mui/material';
+import { motion } from 'framer-motion';
+import axios from 'axios';
+import backgroundImage from '../images/117.svg';
 
-const GalleryWithSearch = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showMore, setShowMore] = useState(false);
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-  const [animateModal, setAnimateModal] = useState(false);
+const cardVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+const randomSVGs = [
+  'https://source.unsplash.com/500x500/?nature',
+  'https://source.unsplash.com/500x500/?technology',
+  'https://source.unsplash.com/500x500/?city',
+  'https://source.unsplash.com/500x500/?forest',
+  'https://source.unsplash.com/500x500/?space',
+];
+
+const getColorForIndex = (index, total) => {
+  const intensity = Math.floor(255 - (index / total) * 200);
+  return `rgb(${intensity}, ${intensity}, ${intensity})`;
+};
+
+const getTextColor = (bgColor) => {
+  const match = bgColor.match(/\d+/g);
+  if (!match) return 'black';
+
+  const [r, g, b] = match.map(Number);
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance > 128 ? 'black' : 'white';
+};
+
+const TopicsSelectionPage = () => {
+  const navigate = useNavigate(); // Initialize navigate function
   const [topics, setTopics] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [gridColumns, setGridColumns] = useState(4);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const images = [
-    "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-5.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-6.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-7.jpg",
-  ];
+  const handleSearchInput = (value) => {
+    setSearchTerm(value);
+  };
 
-  // Card sizes (alternating height based on row and column index)
-  const rowPatterns = [
-    [
-      { width: "w-180", height: "h-[220px]" }, // Row 1 pattern
-      { width: "w-180", height: "h-[220px]" },
-      { width: "w-180", height: "h-[220px]" },
-      { width: "w-180", height: "h-[220px]" },
-    ],
-    [
-      { width: "w-180", height: "h-[220px]" }, // Row 2 pattern
-      { width: "w-180", height: "h-[220px]" },
-      { width: "w-180", height: "h-[200px]" },
-      { width: "w-180", height: "h-[220px]" },
-    ],
-  ];
-
-  const posts = [123, 456, 789, 101, 112, 435, 876, 234, 390, 455, 600, 720];
-
-  // Fetch topics from backend
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        setLoading(true);
-        const response = await fetch("http://localhost:5000/api/topics");
-        if (!response.ok) {
-          throw new Error("Failed to fetch topics");
-        }
-        const data = await response.json();
-        setTopics(data.data); // Assuming backend sends { data: [...] }
+        const response = await axios.get('http://localhost:5000/api/topics');
+        const fetchedTopics = response.data.map((topic, index) => ({
+          ...topic,
+          span: calculateSpan(index),
+          discussionCount: topic.discussions ? topic.discussions.length : 0,
+          image: randomSVGs[Math.floor(Math.random() * randomSVGs.length)],
+          bgColor: getColorForIndex(index, response.data.length),
+        }));
+        setTopics(fetchedTopics);
       } catch (error) {
-        console.error("Error fetching topics:", error);
-      } finally {
-        setLoading(false);
+        console.error('Failed to fetch topics:', error.message);
       }
     };
 
     fetchTopics();
+
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width > 1200) setGridColumns(4);
+      else if (width > 768) setGridColumns(3);
+      else setGridColumns(2);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Generate cards row-wise with alternating layouts
-  const generateCards = () => {
-    const displayedTopics = showMore ? topics : topics.slice(0, 8); // Restrict to 8 topics unless "Show More" is clicked
-
-    return displayedTopics.map((topic, index) => {
-      const rowIndex = Math.floor(index / 4) % 2; // Determine row pattern (alternates between 0 and 1)
-      const colIndex = index % 4; // Column within the current row
-      const cardSize = rowPatterns[rowIndex][colIndex]; // Get size based on row and column
-      const image = images[index % images.length]; // Cycle through images
-
-      // Add extra top shift for 2nd and 4th cards
-      const extraStyle =
-        colIndex === 1 || colIndex === 3 // Check for 2nd and 4th cards
-          ? { top: "-40px" } // Move upwards by 40px
-          : {};
-
-      return (
-        <Card
-          key={topic.id || index} // Use topic id or fallback to index
-          backgroundImage={image}
-          topic={topic.name}
-          posts={topic.posts || posts[index % posts.length]}
-          width={cardSize.width}
-          height={cardSize.height}
-          extraStyle={extraStyle} // Pass extra style dynamically
-        />
-      );
-    });
+  const calculateSpan = (index) => {
+    if (index % 5 === 0) return 'row-span-2 col-span-2';
+    if (index % 3 === 0) return 'row-span-1 col-span-2';
+    return 'row-span-1 col-span-1';
   };
 
-  const handleShowMore = () => {
-    setShowMore(!showMore);
+  const handleTopicClick = (topic) => {
+    navigate('/discussion', { state: { selectedTopic: topic.title } }); // Navigate to DiscussionBoard
   };
-
-  const handleDiscoverClick = (topic) => {
-    const authToken = localStorage.getItem("authToken");
-    if (authToken) {
-      navigate(`/discussion`, { state: { selectedTopic: topic } });
-    } else {
-      setShowLoginPrompt(true);
-      setTimeout(() => setAnimateModal(true), 10);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setAnimateModal(false);
-    setTimeout(() => setShowLoginPrompt(false), 300);
-  };
-
-  const Card = ({ backgroundImage, topic, posts, width, height, extraStyle }) => (
-    <div
-      className={`relative ${width} ${height} bg-cover bg-center rounded-lg overflow-hidden shadow-lg transition-transform duration-200`}
-      style={{ backgroundImage: `url(${backgroundImage})`, ...extraStyle }} // Apply additional styles
-    >
-      <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end items-start text-white p-4">
-        <h3 className="text-xl font-bold mb-1">{topic}</h3>
-        <p className="text-sm">{posts} Posts</p>
-      </div>
-      <div
-        className="absolute inset-0 flex items-center justify-center opacity-0 hover:bg-black/90 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-        onClick={() => handleDiscoverClick(topic)}
-      >
-        <span className="text-green-400 text-lg font-semibold">Discover</span>
-      </div>
-    </div>
-  );
-
-  if (loading) {
-    return (
-      <div className="text-center text-green-600 font-semibold text-xl mt-10">
-        Loading topics...
-      </div>
-    );
-  }
 
   return (
-    <div className="flex">
-      <MySidebar />
-      <div className="flex-1 p-6">
-        <h1 className="text-4xl font-bold text-center mb-2 mt-4 text-green-600">
-          Pick Your Topic
-        </h1>
-        <div className="flex items-center justify-center -mt-2">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="   Search discussions..."
-            className="bg-gray-100 p-2 rounded-full mt-8 w-2/6 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 transform focus:scale-110"
-          />
-        </div>
-        <div className="max-w-4xl mx-auto mt-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-3 gap-x-5">
-            {generateCards()}
+    <div
+      className="flex-1 p-5 mt-4 relative bg-no-repeat bg-cover bg-center"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
+      <div className="absolute inset-0 backdrop-blur-sm" />
+
+      <div className="relative z-10">
+        <div className="text-center mb-2 mt-4">
+          <h2 className="text-4xl font-bold text-green-600">Pick Your Topic</h2>
+
+          <div className="mt-3 flex justify-center mb-6">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => handleSearchInput(e.target.value)}
+              placeholder="Search discussions..."
+              className="bg-gray-100 p-2 rounded-full mt-8 w-2/6 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-600"
+            />
           </div>
-          {topics.length > 8 && (
-            <div className="flex justify-center mt-6">
-              <button
-                onClick={handleShowMore}
-                className="bg-green-500 text-white p-2 rounded-lg transition-all duration-300 hover:bg-green-600"
-              >
-                {showMore ? "Show Less" : "Show More"}
-              </button>
-            </div>
-          )}
         </div>
-        {showLoginPrompt && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-            <div
-              className={`bg-white w-full max-w-md p-8 rounded-lg shadow-lg relative transform transition-all duration-300 ease-in-out ${
-                animateModal ? "opacity-100 scale-100" : "opacity-0 scale-95"
-              }`}
+
+        <div
+          className="grid mx-auto"
+          style={{
+            gridTemplateColumns: `repeat(${gridColumns}, minmax(0, 1fr))`,
+            gridAutoRows: '138px',
+            gap: '18px',
+            maxWidth: '1000px', 
+          }}
+        >
+          {topics.map((topic) => (
+            <motion.div
+              key={topic.id}
+              className={topic.span}
+              style={{
+                gridColumn: `span ${topic.span.includes('col-span-1') ? 1 : 1}`,
+                gridRow: `span ${topic.span.includes('row-span-2') ? 2 : 1}`,
+              }}
+              variants={cardVariants}
+              initial="initial"
+              animate="animate"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <button
-                onClick={handleCloseModal}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              <Card
+                onClick={() => handleTopicClick(topic)} // Updated to use handleTopicClick
+                sx={{
+                  backgroundColor: topic.bgColor,
+                  backgroundImage: `url(${topic.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  borderRadius: '12px',
+                  boxShadow: '0px 40px 100px rgba(0, 0, 0, 0.1)',
+                  height: '100%',
+                  position: 'relative',
+                }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-5 h-5"
+                <div
+                  className="absolute inset-0 bg-black bg-opacity-25"
+                  style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)' }}
+                />
+                <CardContent
+                  className="p-4"
+                  style={{
+                    color: getTextColor(topic.bgColor),
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Login Required
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  Please log in to continue exploring discussions!
-                </p>
-                <div className="flex justify-center gap-4">
-                  <button
-                    onClick={() => {
-                      handleCloseModal();
-                      navigate("/login");
+                  <Typography
+                    variant="h5"
+                    className="font-semibold tracking-wide"
+                    style={{ color: getTextColor(topic.bgColor) }}
+                  >
+                    {topic.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    mt={1}
+                    style={{
+                      color: getTextColor(topic.bgColor) === 'black' ? 'black' : 'white',
                     }}
-                    className="px-6 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-600"
                   >
-                    Login Now
-                  </button>
-                  <button
-                    onClick={handleCloseModal}
-                    className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md shadow-md hover:bg-gray-300"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+                    Posts: {topic.discussionCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-export default GalleryWithSearch;
+export default TopicsSelectionPage;
