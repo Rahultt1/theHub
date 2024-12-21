@@ -45,7 +45,7 @@ const getAllTopics = async (req, res) => {
 
 // Submit a discussion under a topic
 const addDiscussion = async (req, res) => {
-    const { topicId, text } = req.body;
+    const { topicId, text, author, subtopic } = req.body; // Include author and subtopic
 
     if (!topicId || !text) {
         return res.status(400).json({ message: 'Topic ID and text are required.' });
@@ -112,7 +112,24 @@ const addComment = async (req, res) => {
     }
 };
 
+const getDiscussionsByTopic = async (req, res) => {
+    const { topicId } = req.params;
+
+    if (!topicId) {
+        return res.status(400).json({ message: 'Topic ID is required.' });
+    }
+
+    try {
+        const discussions = await Discussion.find({ topic: topicId }).populate('comments');
+        res.status(200).json(discussions);
+    } catch (error) {
+        console.error('Error fetching discussions:', error);
+        res.status(500).json({ message: 'Server error while fetching discussions.' });
+    }
+};
+
 module.exports = {
+    getDiscussionsByTopic,
     createTopic,
     getAllTopics,
     addDiscussion,

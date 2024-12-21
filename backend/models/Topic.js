@@ -12,12 +12,14 @@ const TopicSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        discussions: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Discussion',
-            },
-        ],
+        discussions: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Discussion',
+        }], // Ensure this is defined only once
+        subtopic: { // Add subtopic field
+            type: String,
+            required: false, // Make it optional
+        },
     },
     {
         timestamps: true, // Includes createdAt and updatedAt timestamps

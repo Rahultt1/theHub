@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material'; // Import Button
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import backgroundImage from '../images/117.svg';
@@ -46,12 +46,13 @@ const TopicsSelectionPage = () => {
     const fetchTopics = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/topics');
+        console.log('Fetched Topics:', response.data); // Log the response data
         const fetchedTopics = response.data.map((topic, index) => ({
-          ...topic,
-          span: calculateSpan(index),
-          discussionCount: topic.discussions ? topic.discussions.length : 0,
-          image: randomSVGs[Math.floor(Math.random() * randomSVGs.length)],
-          bgColor: getColorForIndex(index, response.data.length),
+            ...topic,
+            span: calculateSpan(index),
+            discussionCount: topic.discussions ? topic.discussions.length : 0,
+            image: randomSVGs[Math.floor(Math.random() * randomSVGs.length)],
+            bgColor: getColorForIndex(index, response.data.length),
         }));
         setTopics(fetchedTopics);
       } catch (error) {
@@ -80,8 +81,14 @@ const TopicsSelectionPage = () => {
     return 'row-span-1 col-span-1';
   };
 
-  const handleTopicClick = (topic) => {
-    navigate('/discussion', { state: { selectedTopic: topic.title } }); // Navigate to DiscussionBoard
+  const handleTopicClick = async (topic) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/api/topics/${topic._id}/discussions`);
+        const discussions = response.data;
+        navigate('/discussion', { state: { selectedTopic: topic.title, selectedTopicId: topic._id, discussions } });
+    } catch (error) {
+        console.error('Failed to fetch discussions:', error.message);
+    }
   };
 
   return (

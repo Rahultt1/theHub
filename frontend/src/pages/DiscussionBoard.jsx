@@ -3,81 +3,56 @@ import { useNavigate, useLocation } from "react-router-dom"; // useLocation adde
 import MySidebar from "../components/MySidebar";
 import AddQuestionPopup from "../components/AddQuestionPopup";
 
-const discussions = [
-  {
-    id: 1,
-    question: "What are the latest trends in AI?",
-    subtopic: "AI",
-    author: "John Smith",
-    date: "2023-10-01",
-    likes: 45,
-    replyCount: 12,
-    lastUpdate: "2023-10-05",
-  },
-  {
-    id: 2,
-    question: "How can machine learning improve business?",
-    subtopic: "AI",
-    author: "Emily Johnson",
-    date: "2023-09-25",
-    likes: 30,
-    replyCount: 8,
-    lastUpdate: "2023-09-28",
-  },
-  {
-    id: 3,
-    question: "What are the best ways to travel sustainably?",
-    subtopic: "Travel",
-    author: "Jane Doe",
-    date: "2023-08-20",
-    likes: 18,
-    replyCount: 5,
-    lastUpdate: "2023-08-25",
-  },
-];
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
 
 const Content = () => {
   const location = useLocation();
   const selectedTopic = location.state?.selectedTopic || "General"; // Retrieve the selected topic, default to "General"
-  console.log("Selected Topic:", selectedTopic); // Log the selected topic for debugging
+  const discussions = location.state?.discussions || []; // Get discussions from state
+  const author = location.state?.author || "Anonymous"; // Get author from state
   const [filteredDiscussions, setFilteredDiscussions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const filtered = discussions.filter((discussion) =>
-      selectedTopic === "General"
-        ? true
-        : discussion.subtopic.toLowerCase() === selectedTopic.toLowerCase()
-    );
-    setFilteredDiscussions(filtered);
-  }, [selectedTopic]);
+    setFilteredDiscussions(discussions); // Set discussions to state
+  }, [discussions]);
 
   const handleSearchInput = (searchValue) => {
     setSearchTerm(searchValue);
     const filtered = discussions.filter(
       (discussion) =>
-        (discussion.question.toLowerCase().includes(searchValue.toLowerCase()) ||
-          discussion.subtopic.toLowerCase().includes(searchValue.toLowerCase())) &&
+        (discussion.text.toLowerCase().includes(searchValue.toLowerCase()) || // Updated to use discussion.text
+          discussion.topic.title.toLowerCase().includes(searchValue.toLowerCase())) && // Assuming topic has a title
         (selectedTopic === "General" ||
-          discussion.subtopic.toLowerCase().includes(selectedTopic.toLowerCase()))
+          discussion.topic.title.toLowerCase().includes(selectedTopic.toLowerCase()))
     );
     setFilteredDiscussions(filtered);
   };
 
-  const handleQuestionSubmit = (formData) => {
-    const newDiscussion = {
-      id: filteredDiscussions.length + 1,
-      question: formData.question,
-      subtopic: formData.subtopic || "General",
-      author: "You",
-      date: new Date().toLocaleDateString(),
-      likes: 0,
-      replyCount: 0,
-      lastUpdate: new Date().toLocaleDateString(),
-    };
-    setFilteredDiscussions([newDiscussion, ...filteredDiscussions]);
+  const handleQuestionSubmit = async (formData) => {
+    const response = await fetch('/topics/discussions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            topicId: location.state?.selectedTopicId, // Assuming selectedTopicId is passed in state
+            text: formData.question,
+            author: author, // Pass the author to the backend
+        }),
+    });
+
+    if (response.ok) {
+        const newDiscussion = await response.json();
+        setFilteredDiscussions([newDiscussion.discussion, ...filteredDiscussions]);
+    } else {
+        console.error('Failed to add discussion:', await response.json());
+    }
   };
 
   return (
@@ -100,25 +75,28 @@ const Content = () => {
           <div className="w-2/4 space-y-4">
             {filteredDiscussions.map((discussion) => (
               <div
-                key={discussion.id}
-                onClick={() => navigate(`/discussion/${discussion.id}`, { state: discussion })}
+                key={discussion._id} // Updated to use discussion._id
+                onClick={() => navigate(`/discussion/${discussion._id}`, { state: discussion })}
                 className="relative bg-white border-2 border-green-200 p-4 rounded shadow hover:shadow-lg transition duration-200 cursor-pointer"
               >
-                <p className="font-bold text-lg mb-0 text-black">{discussion.question}</p>
+                <p className="font-bold text-lg mb-0 text-black">{discussion.text}</p> {/* Updated to use discussion.text */}
                 <p className="text-gray-500 font-medium text-xs mb-2">
-                  Subtopic: <span className="font-semibold text-green-500">{discussion.subtopic}</span>
+                  Topic: <span className="font-semibold text-green-500">{discussion.topic.title}</span> {/* Assuming topic has a title */}
+                </p>
+                <p className="text-gray-500 font-medium text-xs mb-2">
+                  Subtopic: <span className="font-semibold text-green-500">{discussion.subtopic || 'N/A'}</span> {/* Display subtopic */}
                 </p>
                 <div className="mt-2 text-gray-500 text-xs flex flex-col space-y-1">
                   <div>
                     <span>
-                      By: <span className="text-black font-medium">{discussion.author}</span>
+                      By: <span className="text-black font-medium">{discussion.author}</span> {/* Display author */}
                     </span>
-                    <span className="ml-2">| Published: {discussion.date}</span>
+                    <span className="ml-2">| Published: {formatDate(discussion.createdAt)}</span> {/* Format the date */}
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-blue-500">Replies: {discussion.replyCount}</span>
-                    <span className="text-gray-500">Last Update: {discussion.lastUpdate}</span>
-                    <span className="text-red-500">Likes: {discussion.likes}</span>
+                    <span className="text-blue-500">Replies: {discussion.comments.length}</span> {/* Assuming comments is an array */}
+                    <span className="text-gray-500">Last Update: {formatDate(discussion.updatedAt)}</span> {/* Format the date */}
+                    <span className="text-red-500">Likes: {discussion.likes || 0}</span> {/* Assuming likes is available */}
                   </div>
                 </div>
                 <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-70 hover:bg-opacity-100 text-green-600 font-semibold opacity-0 hover:opacity-100 transition-opacity duration-300">
@@ -134,7 +112,7 @@ const Content = () => {
         >
           Add Question
         </button>
-        {isPopupOpen && <AddQuestionPopup onClose={() => setIsPopupOpen(false)} onSubmit={handleQuestionSubmit} />}
+        {isPopupOpen && <AddQuestionPopup onClose={() => setIsPopupOpen(false)} onSubmit={handleQuestionSubmit} topicId={location.state?.selectedTopicId} author={author} />}
       </div>
     </div>
   );

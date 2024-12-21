@@ -1,5 +1,5 @@
 const express = require('express');
-const { createTopic, getAllTopics, addDiscussion, addComment } = require('../controllers/topicController');
+const { createTopic, getAllTopics, addDiscussion, addComment, getDiscussionsByTopic } = require('../controllers/topicController');
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -9,4 +9,6 @@ router.get('/topics', getAllTopics);
 router.post('/topics/discussions', protect, addDiscussion);
 router.post('/topics/discussions/comments', protect, addComment);
 
-module.exports = router; 
+router.get('/topics/:topicId/discussions', getDiscussionsByTopic);
+
+module.exports = router;
