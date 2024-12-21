@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // useLocation added to receive the state
 import MySidebar from "../components/MySidebar";
-import AddQuestionPopup from "../components/AddQuestionPopup";
+
 
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -12,7 +12,7 @@ const Content = () => {
   const location = useLocation();
   const selectedTopic = location.state?.selectedTopic || "General"; // Retrieve the selected topic, default to "General"
   const discussions = location.state?.discussions || []; // Get discussions from state
-  const author = location.state?.author || "Anonymous"; // Get author from state
+  // const author = location.state?.author || "Anonymous"; // Get author from state
   const [filteredDiscussions, setFilteredDiscussions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -34,26 +34,8 @@ const Content = () => {
     setFilteredDiscussions(filtered);
   };
 
-  const handleQuestionSubmit = async (formData) => {
-    const response = await fetch('/topics/discussions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            topicId: location.state?.selectedTopicId, // Assuming selectedTopicId is passed in state
-            text: formData.question,
-            author: author, // Pass the author to the backend
-        }),
-    });
+  
 
-    if (response.ok) {
-        const newDiscussion = await response.json();
-        setFilteredDiscussions([newDiscussion.discussion, ...filteredDiscussions]);
-    } else {
-        console.error('Failed to add discussion:', await response.json());
-    }
-  };
 
   return (
     <div className="flex">
@@ -80,10 +62,9 @@ const Content = () => {
                 className="relative bg-white border-2 border-green-200 p-4 rounded shadow hover:shadow-lg transition duration-200 cursor-pointer"
               >
                 <p className="font-bold text-lg mb-0 text-black">{discussion.text}</p> {/* Updated to use discussion.text */}
-                <p className="text-gray-500 font-medium text-xs mb-2">
-                  Topic: <span className="font-semibold text-green-500">{discussion.topic.title}</span> {/* Assuming topic has a title */}
+                <p className="text-gray-500 font-medium text-xs mb-0">
                 </p>
-                <p className="text-gray-500 font-medium text-xs mb-2">
+                <p className="text-gray-500 font-medium text-xs mb-0">
                   Subtopic: <span className="font-semibold text-green-500">{discussion.subtopic || 'N/A'}</span> {/* Display subtopic */}
                 </p>
                 <div className="mt-2 text-gray-500 text-xs flex flex-col space-y-1">
@@ -112,7 +93,7 @@ const Content = () => {
         >
           Add Question
         </button>
-        {isPopupOpen && <AddQuestionPopup onClose={() => setIsPopupOpen(false)} onSubmit={handleQuestionSubmit} topicId={location.state?.selectedTopicId} author={author} />}
+        {isPopupOpen}
       </div>
     </div>
   );
